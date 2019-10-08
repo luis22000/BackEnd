@@ -24,9 +24,19 @@ router.get("/:pelicula", (req, res) => {
  
  router.post("/", (req, res) => {
    const Pelicula = req.body;
-   Peliculas.push(Pelicula);
-   res.status('201');
-   res.json(Peliculas);
+   if(Pelicula.NombrePelicula)
+   {
+      Peliculas.push(Pelicula);
+      res.status('201');
+      res.json(Peliculas);
+   }
+   else{
+      
+      res.status('400');
+      res.json({ message: `Pelicula ${Pelicula} no contiene nombre pelicula`});
+   }
+
+   
 });
 
 
