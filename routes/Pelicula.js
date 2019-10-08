@@ -1,26 +1,33 @@
 var express = require('express');
 var router = express.Router();
-let data = require('./data');
+let Peliculas = require('./data');
+const body_parser = require('body-parser');
+router.use(body_parser.json());
 
 router.get('/', function(req, res){
     res.status('200');
-    res.json(data);
+    res.json(Peliculas);
 });
 
 router.get("/:pelicula", (req, res) => {
     const NombrePelicula = req.params.pelicula;
-    const item = data.find(_item => _item.NombrePelicula === NombrePelicula);
- 
-    if (item) {
+    const Pelicula = Peliculas.find(_Pelicula => _Pelicula.NombrePelicula === NombrePelicula);
+  
+    if (Pelicula) {
        res.status('200');
-       res.json(item);
+       res.json(Pelicula);
     } else {
        res.status('404');
        res.json({ message: `Pelicula ${NombrePelicula} No existe`})
     }
  });
  
-
+ router.post("/", (req, res) => {
+   const Pelicula = req.body;
+   Peliculas.push(Pelicula);
+   res.status('201');
+   res.json(Peliculas);
+});
 
 
 module.exports = router;
