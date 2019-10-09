@@ -18,26 +18,90 @@ router.get("/:pelicula", (req, res) => {
        res.json(Pelicula);
     } else {
        res.status('404');
-       res.json({ message: `Pelicula ${NombrePelicula} No existe`})
+       res.json({ message: `Pelicula ${NombrePelicula} No existe`});
     }
  });
  
  router.post("/", (req, res) => {
    const Pelicula = req.body;
-   if(Pelicula.NombrePelicula)
+   
+   if(Object.keys(Pelicula).length === 5)
    {
-      Peliculas.push(Pelicula);
-      res.status('201');
-      res.json(Peliculas);
-   }
-   else{
       
+      if(Pelicula.NombrePelicula)
+         {
+            Peliculas.push(Pelicula);
+            res.status('201');
+            res.json(Peliculas);
+         }
+         else{
+            
+            res.status('400');
+            res.json(Pelicula);
+         }
+      
+     
+   }
+   else
+   {
       res.status('400');
-      res.json({ message: `Pelicula ${Pelicula} no contiene nombre pelicula`});
+      res.json({ message: `Solo deben existir 5 parametros cualquier cantidad diferente no es aceptada`})
    }
 
    
 });
 
+router.put("/:pelicula", (req, res) => {
+   const NombrePelicula = req.params.pelicula;
+   const PeliculaActualizada = req.body;
+   
+   const Pelicula2 = Peliculas.find(_Pelicula => _Pelicula.NombrePelicula === NombrePelicula);
+   const PeliculasActualizacion = [];
+   if (Pelicula2) 
+   {
+      Peliculas.forEach(Pelicula => {
+         if (Pelicula.NombrePelicula === NombrePelicula) {
+            PeliculasActualizacion.push(PeliculaActualizada);
+         } else {
+            PeliculasActualizacion.push(Pelicula);
+         }
+      });
 
+      Peliculas = PeliculasActualizacion;
+      res.status('204');
+      res.json(Peliculas);
+   } 
+   else 
+   {
+      res.status('404');
+      res.json({ message: `Pelicula ${NombrePelicula} No existe`});
+   }
+   
+});
+router.delete("/:pelicula", (req, res) => {
+   const NombrePelicula = req.params.pelicula;
+   
+   const Pelicula2 = Peliculas.find(_Pelicula => _Pelicula.NombrePelicula === NombrePelicula);
+   const PeliculasActualizacion = [];
+   if (Pelicula2) 
+   {
+      Peliculas.forEach(Pelicula => {
+         if (Pelicula.NombrePelicula === NombrePelicula) {
+            
+         } else {
+            PeliculasActualizacion.push(Pelicula);
+         }
+      });
+
+      Peliculas = PeliculasActualizacion;
+      res.status('204');
+      res.json(Peliculas);
+   } 
+   else 
+   {
+      res.status('404');
+      res.json({ message: `Pelicula ${NombrePelicula} No existe`});
+   }
+   
+});
 module.exports = router;
