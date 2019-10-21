@@ -48,34 +48,41 @@ const getOnePelicula = (req, res,next) => {
    }
 };
 
-router.put("/:pelicula", (req, res) => {
+const PutPelicula = (req, res,next) => {
    const NombrePelicula = req.params.pelicula;
    const PeliculaActualizada = req.body;
    
    const Pelicula2 = Peliculas.find(_Pelicula => _Pelicula.NombrePelicula === NombrePelicula);
    const PeliculasActualizacion = [];
-   if (Pelicula2) 
-   {
-      Peliculas.forEach(Pelicula => {
-         if (Pelicula.NombrePelicula === NombrePelicula) {
-            PeliculasActualizacion.push(PeliculaActualizada);
-         } else {
-            PeliculasActualizacion.push(Pelicula);
-         }
-      });
+   if(PeliculaActualizada.NombrePelicula && PeliculaActualizada.NombreDirector && PeliculaActualizada.Genero && PeliculaActualizada.Duracion && PeliculaActualizada.Descripcion && Object.keys(PeliculaActualizada).length === 5)
+      {
+         if (Pelicula2) 
+         {
+            Peliculas.forEach(Pelicula => {
+               if (Pelicula.NombrePelicula === NombrePelicula) {
+                  PeliculasActualizacion.push(PeliculaActualizada);
+               } else {
+                  PeliculasActualizacion.push(Pelicula);
+               }
+            });
 
-      Peliculas = PeliculasActualizacion;
-      res.status('204');
-      res.json(Peliculas);
-   } 
-   else 
-   {
-      res.status('404');
-      res.json({ message: `Pelicula ${NombrePelicula} No existe`});
-   }
+            Peliculas = PeliculasActualizacion;
+            res.status(204);
+            res.send();
+         } 
+         else 
+         {
+            res.status(404);
+            res.send();
+         }
+      }
+      else{
+         res.status(404);
+         res.send();
+      }
    
-});
-router.delete("/:pelicula", (req, res) => {
+};
+const DeletePelicula = (req, res,next) => {
    const NombrePelicula = req.params.pelicula;
    
    const Pelicula2 = Peliculas.find(_Pelicula => _Pelicula.NombrePelicula === NombrePelicula);
@@ -91,19 +98,21 @@ router.delete("/:pelicula", (req, res) => {
       });
 
       Peliculas = PeliculasActualizacion;
-      res.status('204');
-      res.json(Peliculas);
+      res.status(204);
+      res.send();
    } 
    else 
    {
-      res.status('404');
-      res.json({ message: `Pelicula ${NombrePelicula} No existe`});
+      res.status(404);
+      res.send();
    }
    
-});
+};
 module.exports = {
    getPelicula,
    getOnePelicula,
    Peliculas,
-   PostPelicula
+   PostPelicula,
+   PutPelicula,
+   DeletePelicula
  }

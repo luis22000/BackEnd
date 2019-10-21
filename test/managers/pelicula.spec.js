@@ -1,8 +1,8 @@
 require('mocha')
 const sinon = require('sinon')
 const { expect } = require('chai')
-const { getPelicula,Peliculas,getOnePelicula,PostPelicula} = require('../../managers/Pelicula')
-const body_parser = require('body-parser');
+const { getPelicula,Peliculas,getOnePelicula,PostPelicula,PutPelicula,DeletePelicula} = require('../../managers/Pelicula')
+
 
 describe('User Manager', () => {
     
@@ -20,7 +20,7 @@ describe('User Manager', () => {
       sinon.assert.calledWith(statusMock, 200)
       sinon.assert.calledWith(jsonMock, Peliculas)
     })
-})
+
 it('will get one user sucessfully', () => {
     const sandbox = sinon.sandbox.create()
     const statusMock = sandbox.stub()
@@ -139,3 +139,121 @@ it('will get one user sucessfully', () => {
     sinon.assert.calledWith(statusMock, 400)
     sinon.assert.called(sendMock)
   })
+  it('Actualizar Pelicula', () => {
+    const sandbox = sinon.sandbox.create()
+    const statusMock = sandbox.stub()
+    const sendMock = sandbox.stub()
+    const reqMock = {
+        params: {
+            pelicula: 'Avengers End Game'
+          },
+        body: {
+        NombrePelicula: "Avengers End Game25",
+        NombreDirector: "Keanu",
+        Genero: "Accion",
+        Duracion: 60,
+        Descripcion: "La mejor pelicula del mundo"
+      }
+    }
+    const nextMock = sandbox.stub();
+    const resMock = {
+        status: statusMock,
+        send: sendMock
+    }
+
+    PutPelicula(reqMock, resMock, nextMock)
+    sinon.assert.calledWith(statusMock, 204)
+    sinon.assert.called(sendMock)
+  })
+  it('Actualizar Pelicula Error cuando el nombre no existe', () => {
+    const sandbox = sinon.sandbox.create()
+    const statusMock = sandbox.stub()
+    const sendMock = sandbox.stub()
+    const reqMock = {
+        params: {
+            pelicula: 'Avengers End Game5'
+          },
+        body: {
+        NombrePelicula: "Avengers End Game25",
+        NombreDirector: "Keanu",
+        Genero: "Accion",
+        Duracion: 60,
+        Descripcion: "La mejor pelicula del mundo"
+      }
+    }
+    const nextMock = sandbox.stub();
+    const resMock = {
+        status: statusMock,
+        send: sendMock
+    }
+
+    PutPelicula(reqMock, resMock, nextMock)
+    sinon.assert.calledWith(statusMock, 404)
+    sinon.assert.called(sendMock)
+  })
+
+  it('Actualizar Pelicula Error cuando el parametro no existe', () => {
+    const sandbox = sinon.sandbox.create()
+    const statusMock = sandbox.stub()
+    const sendMock = sandbox.stub()
+    const reqMock = {
+        params: {
+            pelicula: 'Avengers End Game'
+          },
+        body: {
+        NombrePelicula2: "Avengers End Game25",
+        NombreDirector: "Keanu",
+        Genero: "Accion",
+        Duracion: 60,
+        Descripcion: "La mejor pelicula del mundo"
+      }
+    }
+    const nextMock = sandbox.stub();
+    const resMock = {
+        status: statusMock,
+        send: sendMock
+    }
+
+    PutPelicula(reqMock, resMock, nextMock)
+    sinon.assert.calledWith(statusMock, 404)
+    sinon.assert.called(sendMock)
+  })
+  it('Eliminar Pelicula', () => {
+    const sandbox = sinon.sandbox.create()
+    const statusMock = sandbox.stub()
+    const sendMock = sandbox.stub()
+    const reqMock = {
+      params: {
+        pelicula: "Avengers End Game25",
+      }
+    }
+    const nextMock = sandbox.stub();
+    const resMock = {
+        status: statusMock,
+        send: sendMock
+    }
+
+    DeletePelicula(reqMock, resMock, nextMock)
+    sinon.assert.calledWith(statusMock, 204)
+    sinon.assert.called(sendMock)
+  })
+  it('Eliminar Pelicula Que no exista', () => {
+    const sandbox = sinon.sandbox.create()
+    const statusMock = sandbox.stub()
+    const sendMock = sandbox.stub()
+    const reqMock = {
+      params: {
+        pelicula: "Avengers End Game26",
+      }
+    }
+    const nextMock = sandbox.stub();
+    const resMock = {
+        status: statusMock,
+        send: sendMock
+    }
+
+    DeletePelicula(reqMock, resMock, nextMock)
+    sinon.assert.calledWith(statusMock, 404)
+    sinon.assert.called(sendMock)
+  })
+})
