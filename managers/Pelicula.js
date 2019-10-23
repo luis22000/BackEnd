@@ -3,37 +3,57 @@ var router = express.Router();
 let Peliculas = require('./data');
 const body_parser = require('body-parser');
 router.use(body_parser.json());
+const PeliculaDB = require('../model/model.pelicula');
 
 const getPelicula = (req, res,next) =>{
-    res.status(200);
-    res.json(Peliculas);
+   PeliculaDB.find()
+    .then(peliculadb => {
+        res.status(200);
+        res.json(peliculadb);
+    }); 
+   
 };
 
 
 const getOnePelicula = (req, res,next) => {
-    const NombrePelicula = req.params.pelicula;
-    const Pelicula = Peliculas.find(_Pelicula => _Pelicula.NombrePelicula === NombrePelicula);
-  
-    if (Pelicula) {
-       res.status(200);
-       res.json(Pelicula);
-    } else {
-       console.log('LLego Aqui');
-       res.status(404);
-       res.send();
-    }
- };
+   PeliculaDB.find(  { NombrePelicula: req.params.pelicula })
+    .then(peliculadb => {
+        if(!peliculadb) {
+            res.status(404);
+            res.send();
+        }
+        console.log(peliculadb);
+        res.json(peliculadb);
+    }).catch(err => {
+        
+            res.status(404);
+            res.send();           
+        
+    });
+}; 
+   
+
+
  
  const PostPelicula = (req, res,next) => {
-   const Pelicula = req.body;
-   console.log(req.body)
+   Pelicula = req.body;
+   
    if(Object.keys(Pelicula).length === 5)
    {
       if(Pelicula.NombrePelicula && Pelicula.NombreDirector && Pelicula.Genero && Pelicula.Duracion && Pelicula.Descripcion )
          {
-            Peliculas.push(Pelicula);
-            res.status(201);
-            res.json(Peliculas);
+            const peliculaDB = new PeliculaDB({
+               NombrePelicula: Pelicula.NombrePelicula , 
+               NombreDirector: Pelicula.NombreDirector,
+               Genero: Pelicula.Genero,
+               Duracion:Pelicula.Duracion,
+               Descripcion: Pelicula.Descripcion 
+           });
+           peliculaDB.save()
+               .then(Peliculadb => {
+                  res.status(200);
+                  res.send(Peliculadb);
+               });
          }
          else{
             
@@ -49,63 +69,59 @@ const getOnePelicula = (req, res,next) => {
 };
 
 const PutPelicula = (req, res,next) => {
-   const NombrePelicula = req.params.pelicula;
-   const PeliculaActualizada = req.body;
    
-   const Pelicula2 = Peliculas.find(_Pelicula => _Pelicula.NombrePelicula === NombrePelicula);
-   const PeliculasActualizacion = [];
-   if(PeliculaActualizada.NombrePelicula && PeliculaActualizada.NombreDirector && PeliculaActualizada.Genero && PeliculaActualizada.Duracion && PeliculaActualizada.Descripcion && Object.keys(PeliculaActualizada).length === 5)
+  Pelicula = req.body;
+  PeliculaDB.find(  { NombrePelicula: req.params.pelicula })
+  .then(peliculadb => {
+      if(!peliculadb) {
+          res.status(404);
+          res.send();
+      }
+      if(Object.keys(Pelicula).length === 5)
       {
-         if (Pelicula2) 
-         {
-            Peliculas.forEach(Pelicula => {
-               if (Pelicula.NombrePelicula === NombrePelicula) {
-                  PeliculasActualizacion.push(PeliculaActualizada);
-               } else {
-                  PeliculasActualizacion.push(Pelicula);
-               }
-            });
-
-            Peliculas = PeliculasActualizacion;
-            res.status(204);
-            res.send();
-         } 
-         else 
-         {
-            res.status(404);
-            res.send();
-         }
+         if(Pelicula.NombrePelicula && Pelicula.NombreDirector && Pelicula.Genero && Pelicula.Duracion && Pelicula.Descripcion )
+            {
+               console.log(peliculadb)
+               PeliculaDB.findOneAndUpdate(peliculadb, {
+                  NombrePelicula: Pelicula.NombrePelicula,
+                  NombreDirector: Pelicula.NombreDirector ,
+                  Genero: Pelicula.Genero,
+                  Duracion: Pelicula.Duracion,
+                  Descripcion: Pelicula.Descripcion
+         
+               }, {new: true})
+               .then(Peliculadb3 => {  
+                   res.status(204);
+               });
+          
+            }
       }
-      else{
-         res.status(404);
-         res.send();
-      }
+  }).catch(err => {
+          res.status(404);
+          res.send();
+  });
    
 };
 const DeletePelicula = (req, res,next) => {
-   const NombrePelicula = req.params.pelicula;
-   
-   const Pelicula2 = Peliculas.find(_Pelicula => _Pelicula.NombrePelicula === NombrePelicula);
-   const PeliculasActualizacion = [];
-   if (Pelicula2) 
-   {
-      Peliculas.forEach(Pelicula => {
-         if (Pelicula.NombrePelicula === NombrePelicula) {
-            
-         } else {
-            PeliculasActualizacion.push(Pelicula);
-         }
-      });
 
-      Peliculas = PeliculasActualizacion;
-      res.status(204);
-      res.send();
-   } 
-   else 
-   {
-      res.status(404);
-      res.send();
-   }
+  PeliculaDB.find(  { NombrePelicula: req.params.pelicula })
+  .then(peliculadb => {
+      if(!peliculadb) {
+          res.status(404);
+          res.send();
+      }
+      
+               
+      PeliculaDB.findOneAndDelete(peliculadb)
+      .then(Peliculadb3 => {  
+            res.status(204);
+            res.send();
+      });
+          
+  }).catch(err => {
+          res.status(404);
+          res.send();
+  });
    
 };
 module.exports = {
