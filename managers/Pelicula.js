@@ -5,7 +5,7 @@ const body_parser = require('body-parser');
 router.use(body_parser.json());
 const PeliculaDB = require('../model/model.pelicula');
 
-const getPelicula = (req, res,next) =>{
+const getPelicula = async(req, res,next) =>{
    PeliculaDB.find()
     .then(peliculadb => {
         res.status(200);
@@ -15,27 +15,18 @@ const getPelicula = (req, res,next) =>{
 };
 
 
-const getOnePelicula = (req, res,next) => {
+const getOnePelicula = async(req, res,next) => {
    PeliculaDB.find(  { NombrePelicula: req.params.pelicula })
     .then(peliculadb => {
         if(!peliculadb) {
             res.status(404);
             res.send();
         }
-        console.log(peliculadb);
+        res.status(200);
         res.json(peliculadb);
-    }).catch(err => {
-        
-            res.status(404);
-            res.send();           
-        
-    });
+    })
 }; 
-   
-
-
- 
- const PostPelicula = (req, res,next) => {
+ const PostPelicula = async(req, res,next) => {
    Pelicula = req.body;
    
    if(Object.keys(Pelicula).length === 5)
@@ -68,7 +59,7 @@ const getOnePelicula = (req, res,next) => {
    }
 };
 
-const PutPelicula = (req, res,next) => {
+const PutPelicula = async(req, res,next) => {
    
   Pelicula = req.body;
   PeliculaDB.find(  { NombrePelicula: req.params.pelicula })
@@ -81,7 +72,7 @@ const PutPelicula = (req, res,next) => {
       {
          if(Pelicula.NombrePelicula && Pelicula.NombreDirector && Pelicula.Genero && Pelicula.Duracion && Pelicula.Descripcion )
             {
-               console.log(peliculadb)
+               
                PeliculaDB.findOneAndUpdate(peliculadb, {
                   NombrePelicula: Pelicula.NombrePelicula,
                   NombreDirector: Pelicula.NombreDirector ,
@@ -96,32 +87,29 @@ const PutPelicula = (req, res,next) => {
           
             }
       }
-  }).catch(err => {
-          res.status(404);
-          res.send();
-  });
+      else
+      {
+        res.status(404);
+        res.send();
+      }
+  })
    
 };
-const DeletePelicula = (req, res,next) => {
+const DeletePelicula = async(req, res,next) => {
 
   PeliculaDB.find(  { NombrePelicula: req.params.pelicula })
   .then(peliculadb => {
       if(!peliculadb) {
           res.status(404);
           res.send();
-      }
-      
-               
+      }                 
       PeliculaDB.findOneAndDelete(peliculadb)
       .then(Peliculadb3 => {  
             res.status(204);
             res.send();
       });
           
-  }).catch(err => {
-          res.status(404);
-          res.send();
-  });
+  })
    
 };
 module.exports = {

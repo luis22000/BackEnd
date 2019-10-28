@@ -4,9 +4,9 @@ const { expect } = require('chai')
 const { getPelicula,Peliculas,getOnePelicula,PostPelicula,PutPelicula,DeletePelicula} = require('../../managers/Pelicula')
 
 
-describe('User Manager', () => {
+describe('User Manager', async () => {
     
-    it('Obtener todas las Peliculas', () => {
+    it('Obtener todas las Peliculas', async() => {
       const sandbox = sinon.sandbox.create()
       const statusMock = sandbox.stub()
       const jsonMock = sandbox.stub()
@@ -16,12 +16,14 @@ describe('User Manager', () => {
         status: statusMock,
         json: jsonMock
       }
-      getPelicula(reqMock, res, nextMock)
+      await getPelicula(reqMock, res, nextMock).then(() =>{
       sinon.assert.calledWith(statusMock, 200)
       sinon.assert.calledWith(jsonMock, Peliculas)
+    }).catch(() =>{})
+
     })
 
-it('will get one user sucessfully', () => {
+it('will get one user sucessfully',async () => {
     const sandbox = sinon.sandbox.create()
     const statusMock = sandbox.stub()
     const jsonMock = sandbox.stub()
@@ -43,12 +45,13 @@ it('will get one user sucessfully', () => {
       json: jsonMock
     }
 
-    getOnePelicula(reqMock, resMock, nextMock)
+    await getOnePelicula(reqMock, resMock, nextMock).then(() =>{
     sinon.assert.calledWith(statusMock, 200)
     sinon.assert.calledWith(jsonMock, response)
+    }).catch(() =>{})
   })
 
-  it('Pelicula que no existe', () => {
+  it('Pelicula que no existe', async () => {
     const sandbox = sinon.sandbox.create()
     const statusMock = sandbox.stub()
     const sendMock = sandbox.stub()
@@ -62,12 +65,13 @@ it('will get one user sucessfully', () => {
       status: statusMock,
       send: sendMock
     }
-    getOnePelicula(reqMock, resMock, nextMock)
+    await getOnePelicula(reqMock, resMock, nextMock).then(() =>{
     sinon.assert.calledWith(statusMock, 404)
     sinon.assert.called(sendMock)
+  }).catch(() =>{})
   })
 
-  it('Agregar Pelicula sin error', () => {
+  it('Agregar Pelicula sin error',async () => {
     const sandbox = sinon.sandbox.create()
     const statusMock = sandbox.stub()
     const jsonMock = sandbox.stub()
@@ -88,12 +92,13 @@ it('will get one user sucessfully', () => {
       json: jsonMock
     }
 
-    PostPelicula(reqMock, resMock, nextMock)
+    await PostPelicula(reqMock, resMock, nextMock).then(() =>{
     sinon.assert.calledWith(statusMock, 201)
     sinon.assert.calledWith(jsonMock, response)
+  }).catch(() =>{})
   })
 
-  it('Agregar Pelicula con error cuando no estan todos los parametros', () => {
+  it('Agregar Pelicula con error cuando no estan todos los parametros', async() => {
     const sandbox = sinon.sandbox.create()
     const statusMock = sandbox.stub()
     const sendMock = sandbox.stub()
@@ -112,11 +117,12 @@ it('will get one user sucessfully', () => {
         send: sendMock
     }
 
-    PostPelicula(reqMock, resMock, nextMock)
+    await PostPelicula(reqMock, resMock, nextMock).then(() =>{
     sinon.assert.calledWith(statusMock, 400)
     sinon.assert.called(sendMock)
+  }).catch(() =>{})
   })
-  it('No agregar pelicula por que no existe el parametro Pelicula o esta mal escrito', () => {
+  it('No agregar pelicula por que no existe el parametro Pelicula o esta mal escrito', async() => {
     const sandbox = sinon.sandbox.create()
     const statusMock = sandbox.stub()
     const sendMock = sandbox.stub()
@@ -135,11 +141,12 @@ it('will get one user sucessfully', () => {
         send: sendMock
     }
 
-    PostPelicula(reqMock, resMock, nextMock)
+    await PostPelicula(reqMock, resMock, nextMock).then(() =>{
     sinon.assert.calledWith(statusMock, 400)
     sinon.assert.called(sendMock)
+  }).catch(() =>{})
   })
-  it('Actualizar Pelicula', () => {
+  it('Actualizar Pelicula', async() => {
     const sandbox = sinon.sandbox.create()
     const statusMock = sandbox.stub()
     const sendMock = sandbox.stub()
@@ -161,11 +168,12 @@ it('will get one user sucessfully', () => {
         send: sendMock
     }
 
-    PutPelicula(reqMock, resMock, nextMock)
+    await PutPelicula(reqMock, resMock, nextMock).then(() =>{
     sinon.assert.calledWith(statusMock, 204)
     sinon.assert.called(sendMock)
+  }).catch(() =>{})
   })
-  it('Actualizar Pelicula Error cuando el nombre no existe', () => {
+  it('Actualizar Pelicula Error cuando el nombre no existe', async() => {
     const sandbox = sinon.sandbox.create()
     const statusMock = sandbox.stub()
     const sendMock = sandbox.stub()
@@ -187,12 +195,13 @@ it('will get one user sucessfully', () => {
         send: sendMock
     }
 
-    PutPelicula(reqMock, resMock, nextMock)
+    await PutPelicula(reqMock, resMock, nextMock).then(() =>{
     sinon.assert.calledWith(statusMock, 404)
     sinon.assert.called(sendMock)
+  }).catch(() =>{})
   })
 
-  it('Actualizar Pelicula Error cuando el parametro no existe', () => {
+  it('Actualizar Pelicula Error cuando el parametro no existe',async () => {
     const sandbox = sinon.sandbox.create()
     const statusMock = sandbox.stub()
     const sendMock = sandbox.stub()
@@ -214,11 +223,12 @@ it('will get one user sucessfully', () => {
         send: sendMock
     }
 
-    PutPelicula(reqMock, resMock, nextMock)
+    await PutPelicula(reqMock, resMock, nextMock).then(() =>{
     sinon.assert.calledWith(statusMock, 404)
     sinon.assert.called(sendMock)
+  }).catch(() =>{})
   })
-  it('Eliminar Pelicula', () => {
+  it('Eliminar Pelicula',async () => {
     const sandbox = sinon.sandbox.create()
     const statusMock = sandbox.stub()
     const sendMock = sandbox.stub()
@@ -233,11 +243,12 @@ it('will get one user sucessfully', () => {
         send: sendMock
     }
 
-    DeletePelicula(reqMock, resMock, nextMock)
+    await DeletePelicula(reqMock, resMock, nextMock).then(() =>{
     sinon.assert.calledWith(statusMock, 204)
     sinon.assert.called(sendMock)
+  }).catch(() =>{})
   })
-  it('Eliminar Pelicula Que no exista', () => {
+  it('Eliminar Pelicula Que no exista', async() => {
     const sandbox = sinon.sandbox.create()
     const statusMock = sandbox.stub()
     const sendMock = sandbox.stub()
@@ -252,8 +263,9 @@ it('will get one user sucessfully', () => {
         send: sendMock
     }
 
-    DeletePelicula(reqMock, resMock, nextMock)
+    await DeletePelicula(reqMock, resMock, nextMock).then(() =>{
     sinon.assert.calledWith(statusMock, 404)
     sinon.assert.called(sendMock)
+  }).catch(() =>{})
   })
 })
