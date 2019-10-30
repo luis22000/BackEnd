@@ -28,7 +28,7 @@ const getOnePelicula = async(req, res,next) => {
 }; 
  const PostPelicula = async(req, res,next) => {
    Pelicula = req.body;
-   
+   console.log(Pelicula); 
    if(Object.keys(Pelicula).length === 5)
    {
       if(Pelicula.NombrePelicula && Pelicula.NombreDirector && Pelicula.Genero && Pelicula.Duracion && Pelicula.Descripcion )

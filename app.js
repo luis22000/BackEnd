@@ -4,6 +4,7 @@ const dbConfig = require('./config/database.config.js');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 var PeliculaRouter = require('./routes/Pelicula');
+var cors = require('cors');
 mongoose.Promise = global.Promise;
 
 var app = express();
@@ -20,7 +21,7 @@ mongoose.connect(dbConfig.url, {
   console.log('Could not connect to the database. Exiting now...', err);
   process.exit();
 });
-
+app.use(cors());
 app.use('/api/v1/pelicula', PeliculaRouter);
 app.set('port', process.env.PORT || 3001);
 app.listen(app.get('port'));
