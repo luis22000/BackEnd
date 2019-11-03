@@ -7,6 +7,7 @@ const PeliculaDB = require('../model/model.pelicula');
 var redis = require('redis');
 var client = redis.createClient();
 var KeyPelicula = "getPelicula";
+
 const getPelicula = async(req, res,next) =>{
    client.exists(KeyPelicula, function(err, reply) 
    {
@@ -25,9 +26,8 @@ const getPelicula = async(req, res,next) =>{
       {
             PeliculaDB.find()
             .then(peliculadb => {
-               client.set(KeyPelicula,JSON.stringify(peliculadb))
-              console.log(KeyCars);
-              client.expire(KeyCars,30);
+               client.set(KeyPelicula,JSON.stringify(peliculadb));
+              client.expire(KeyPelicula,30);
                res.status(200);
                res.json(peliculadb);
             }); 
@@ -39,10 +39,13 @@ const getPelicula = async(req, res,next) =>{
 
 const getOnePelicula = async(req, res,next) => {
    PeliculaDB.find(  { NombrePelicula: req.params.pelicula })
-    .then(peliculadb => {
-        if(!peliculadb) {
+    .then(peliculadb  => {
+       console.log(peliculadb);
+        if(peliculadb[0] === "") 
+        {
             res.status(404);
             res.send();
+            return;
         }
         res.status(200);
         res.json(peliculadb);
