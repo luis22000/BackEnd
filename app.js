@@ -7,8 +7,9 @@ var PeliculaRouter = require('./routes/Pelicula');
 var cors = require('cors');
 mongoose.Promise = global.Promise;
 var redis = require('redis');
-var client = redis.createClient();
 
+var config = require('./config/redis.config');
+var client = redis.createClient(config.redisConf);
 var app = express();
 app.use(bodyParser.urlencoded({ extended: true }))
 

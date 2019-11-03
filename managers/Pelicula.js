@@ -5,7 +5,8 @@ const body_parser = require('body-parser');
 router.use(body_parser.json());
 const PeliculaDB = require('../model/model.pelicula');
 var redis = require('redis');
-var client = redis.createClient();
+var config = require('../config/redis.config');
+var client = redis.createClient(config.redisConf);
 var KeyPelicula = "getPelicula";
 
 const getPelicula = async(req, res,next) =>{
@@ -41,7 +42,7 @@ const getOnePelicula = async(req, res,next) => {
    PeliculaDB.find(  { NombrePelicula: req.params.pelicula })
     .then(peliculadb  => {
        console.log(peliculadb);
-        if(peliculadb[0] === "") 
+        if(!peliculadb) 
         {
             res.status(404);
             res.send();
