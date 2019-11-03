@@ -6,6 +6,8 @@ const bodyParser = require('body-parser');
 var PeliculaRouter = require('./routes/Pelicula');
 var cors = require('cors');
 mongoose.Promise = global.Promise;
+var redis = require('redis');
+var client = redis.createClient();
 
 var app = express();
 app.use(bodyParser.urlencoded({ extended: true }))
@@ -20,6 +22,9 @@ mongoose.connect(dbConfig.url, {
 }).catch(err => {
   console.log('Could not connect to the database. Exiting now...', err);
   process.exit();
+});
+client.on('connect', function() {
+  console.log('conectado a redis');
 });
 app.use(cors());
 app.use('/api/v1/pelicula', PeliculaRouter);

@@ -4,13 +4,35 @@ let Peliculas = require('./data');
 const body_parser = require('body-parser');
 router.use(body_parser.json());
 const PeliculaDB = require('../model/model.pelicula');
-
+var redis = require('redis');
+var client = redis.createClient();
+var KeyPelicula = "getPelicula";
 const getPelicula = async(req, res,next) =>{
-   PeliculaDB.find()
-    .then(peliculadb => {
-        res.status(200);
-        res.json(peliculadb);
-    }); 
+   client.exists(KeyPelicula, function(err, reply) 
+   {
+      if (reply === 1) {
+
+         console.log('exists');
+
+         client.get(KeyPelicula, function(error,Rpelicula){
+
+         res.status(200).json(JSON.parse(Rpelicula));
+
+         })
+
+      }
+      else
+      {
+            PeliculaDB.find()
+            .then(peliculadb => {
+               client.set(KeyPelicula,JSON.stringify(peliculadb))
+              console.log(KeyCars);
+              client.expire(KeyCars,30);
+               res.status(200);
+               res.json(peliculadb);
+            }); 
+      }
+})
    
 };
 
@@ -28,22 +50,34 @@ const getOnePelicula = async(req, res,next) => {
 }; 
  const PostPelicula = async(req, res,next) => {
    Pelicula = req.body;
-   console.log(Pelicula); 
+   
    if(Object.keys(Pelicula).length === 5)
    {
       if(Pelicula.NombrePelicula && Pelicula.NombreDirector && Pelicula.Genero && Pelicula.Duracion && Pelicula.Descripcion )
          {
-            const peliculaDB = new PeliculaDB({
-               NombrePelicula: Pelicula.NombrePelicula , 
-               NombreDirector: Pelicula.NombreDirector,
-               Genero: Pelicula.Genero,
-               Duracion:Pelicula.Duracion,
-               Descripcion: Pelicula.Descripcion 
-           });
-           peliculaDB.save()
-               .then(Peliculadb => {
-                  res.status(200);
-                  res.send(Peliculadb);
+            
+            PeliculaDB.find(  { NombrePelicula: Pelicula.NombrePelicula })
+               .then(peliculadb2 => {
+                  console.log(peliculadb2);
+                  if(!peliculadb2) {
+                        res.status(400);
+                        res.send();
+                  }
+                  else
+                  {
+                        const peliculaDB = new PeliculaDB({
+                           NombrePelicula: Pelicula.NombrePelicula , 
+                           NombreDirector: Pelicula.NombreDirector,
+                           Genero: Pelicula.Genero,
+                           Duracion:Pelicula.Duracion,
+                           Descripcion: Pelicula.Descripcion 
+                     });
+                     peliculaDB.save()
+                           .then(Peliculadb => {
+                              res.status(200);
+                              res.send(Peliculadb);
+                           });
+                  }
                });
          }
          else{
@@ -65,7 +99,7 @@ const PutPelicula = async(req, res,next) => {
   PeliculaDB.find(  { NombrePelicula: req.params.pelicula })
   .then(peliculadb => {
       if(!peliculadb) {
-          res.status(404);
+          res.status(400);
           res.send();
       }
       if(Object.keys(Pelicula).length === 5)
