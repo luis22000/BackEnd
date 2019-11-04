@@ -14,6 +14,7 @@ const getPelicula = async(req, res,next) =>{
    {
       if (reply === 1) {
 
+         
 
          client.get(KeyPelicula, function(error,Rpelicula){
 
@@ -40,8 +41,13 @@ const getPelicula = async(req, res,next) =>{
 const getOnePelicula = async(req, res,next) => {
    PeliculaDB.find(  { NombrePelicula: req.params.pelicula })
     .then(peliculadb  => {
+<<<<<<< Updated upstream
        console.log(peliculadb);
         if(!peliculadb) 
+=======
+      
+        if(!peliculadb[0]) 
+>>>>>>> Stashed changes
         {
             res.status(404);
             res.send();
@@ -61,6 +67,9 @@ const getOnePelicula = async(req, res,next) => {
             
             PeliculaDB.find(  { NombrePelicula: Pelicula.NombrePelicula })
                .then(peliculadb2 => {
+                  console.log(peliculadb2[0]);
+                  if(peliculadb2[0]) {
+                        res.status(202);
                         res.send();
                   }
                   else
