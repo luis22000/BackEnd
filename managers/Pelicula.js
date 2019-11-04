@@ -41,13 +41,8 @@ const getPelicula = async(req, res,next) =>{
 const getOnePelicula = async(req, res,next) => {
    PeliculaDB.find(  { NombrePelicula: req.params.pelicula })
     .then(peliculadb  => {
-<<<<<<< Updated upstream
-       console.log(peliculadb);
-        if(!peliculadb) 
-=======
-      
+       
         if(!peliculadb[0]) 
->>>>>>> Stashed changes
         {
             res.status(404);
             res.send();
