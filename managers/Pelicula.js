@@ -14,7 +14,6 @@ const getPelicula = async(req, res,next) =>{
    {
       if (reply === 1) {
 
-         console.log('exists');
 
          client.get(KeyPelicula, function(error,Rpelicula){
 
@@ -62,9 +61,6 @@ const getOnePelicula = async(req, res,next) => {
             
             PeliculaDB.find(  { NombrePelicula: Pelicula.NombrePelicula })
                .then(peliculadb2 => {
-                  console.log(peliculadb2);
-                  if(!peliculadb2) {
-                        res.status(400);
                         res.send();
                   }
                   else
