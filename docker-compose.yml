@@ -8,6 +8,7 @@ services:
     depends_on:
       - redis
       - mongo
+      - angular
   redis:
     image: redis
     ports:
@@ -19,4 +20,4 @@ services:
   angular:    
     image: angular
     ports:
-      - "4200:4200"
+      - "8000:4200"
