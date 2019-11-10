@@ -102,8 +102,8 @@ const PutPelicula = async(req, res,next) => {
   Pelicula = req.body;
   PeliculaDB.find(  { NombrePelicula: req.params.pelicula })
   .then(peliculadb => {
-      if(!peliculadb) {
-          res.status(400);
+      if(!peliculadb[0]) {
+          res.status(202);
           res.send();
       }
       if(Object.keys(Pelicula).length === 5)
@@ -120,6 +120,7 @@ const PutPelicula = async(req, res,next) => {
          
                }, {new: true})
                .then(Peliculadb3 => {  
+                  console.log(1)
                    res.status(204);
                });
           
