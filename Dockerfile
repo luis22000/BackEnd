@@ -1,5 +1,8 @@
 FROM node:10
 
+ARG PROD=production
+
+ENV NODE_ENV ${PROD}
 
 WORKDIR /usr/src/app
 
@@ -13,4 +16,4 @@ COPY . .
 
 EXPOSE 3001
 
-CMD [ "node", "app" ]
+CMD [ "npm", "start" ]

@@ -1,7 +1,7 @@
 var config = {
 
 redisConf: {
-    host: '10.0.75.1', // The redis's server ip 
+    host: '10.0.75.1',
     port: '6379',
     }
 };

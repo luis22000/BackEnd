@@ -169,7 +169,7 @@ it('will get one user sucessfully',async () => {
     }
 
     await PutPelicula(reqMock, resMock, nextMock).then(() =>{
-    sinon.assert.calledWith(statusMock, 204)
+    sinon.assert.calledWith(statusMock, 200)
     sinon.assert.called(sendMock)
   }).catch(() =>{})
   })

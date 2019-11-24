@@ -1,7 +1,8 @@
 version: '3'
 services:
   backend:
-    image: express
+    image: luis2200/express:latest
+    container_name: express
     restart: always
     ports:
       - '3001:3001'
@@ -11,13 +12,16 @@ services:
       - angular
   redis:
     image: redis
+    container_name: redis
     ports:
       - "6379:6379"
   mongo:    
     image: mongo
+    container_name: mongo
     ports:
       - "27017:27017"
   angular:    
-    image: angular
+    image: luis2200/angular:latest
+    container_name: angular
     ports:
       - "8000:4200"

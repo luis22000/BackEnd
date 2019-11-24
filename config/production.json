@@ -1,0 +1,11 @@
+{
+    "Customer": {
+      "dbConfig": {
+        "host": "mongoluis.eastus.azurecontainer.io"
+      },
+      "redisConf": {
+        "host": "redisluis.eastus.azurecontainer.io"
+        
+    }
+    }
+  }

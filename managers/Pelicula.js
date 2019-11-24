@@ -5,8 +5,9 @@ const body_parser = require('body-parser');
 router.use(body_parser.json());
 const PeliculaDB = require('../model/model.pelicula');
 var redis = require('redis');
-var config = require('../config/redis.config');
-var client = redis.createClient(config.redisConf);
+const config = require('config');
+var config2 = config.get('Customer.redisConf');
+var client = redis.createClient(config2);
 var KeyPelicula = "getPelicula";
 
 const getPelicula = async(req, res,next) =>{
@@ -98,8 +99,9 @@ const getOnePelicula = async(req, res,next) => {
 };
 
 const PutPelicula = async(req, res,next) => {
-   
+  
   Pelicula = req.body;
+  console.log(Pelicula);
   PeliculaDB.find(  { NombrePelicula: req.params.pelicula })
   .then(peliculadb => {
       if(!peliculadb[0]) {
@@ -111,7 +113,7 @@ const PutPelicula = async(req, res,next) => {
          if(Pelicula.NombrePelicula && Pelicula.NombreDirector && Pelicula.Genero && Pelicula.Duracion && Pelicula.Descripcion )
             {
                
-               PeliculaDB.findOneAndUpdate(peliculadb, {
+               PeliculaDB.findByIdAndUpdate(peliculadb, {
                   NombrePelicula: Pelicula.NombrePelicula,
                   NombreDirector: Pelicula.NombreDirector ,
                   Genero: Pelicula.Genero,
@@ -120,8 +122,10 @@ const PutPelicula = async(req, res,next) => {
          
                }, {new: true})
                .then(Peliculadb3 => {  
-                  console.log(1)
+                  
                    res.status(204);
+                   res.send();
+                   return;
                });
           
             }
