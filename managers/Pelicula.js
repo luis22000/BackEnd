@@ -9,32 +9,52 @@ const config = require('config');
 var config2 = config.get('Customer.redisConf');
 var client = redis.createClient(config2);
 var KeyPelicula = "getPelicula";
+var conecto = false;
 
+client.on('connect', function() {
+   conecto=true;
+   console.log('Conecto a Redis');
+ });
+ client.on('error', function() {
+   conecto=false;
+   console.log('No conecto a Redis');
+ });
 const getPelicula = async(req, res,next) =>{
-   client.exists(KeyPelicula, function(err, reply) 
+   if(conecto)
    {
-      if (reply === 1) {
+            client.exists(KeyPelicula, function(err, reply) 
+            {
+               if (reply === 1) {
 
-         
+                  client.get(KeyPelicula, function(error,Rpelicula){
 
-         client.get(KeyPelicula, function(error,Rpelicula){
+                  res.status(200).json(JSON.parse(Rpelicula));
 
-         res.status(200).json(JSON.parse(Rpelicula));
+                  })
 
+               }
+               else
+               {
+                     PeliculaDB.find()
+                     .then(peliculadb => {
+                        client.set(KeyPelicula,JSON.stringify(peliculadb));
+                     client.expire(KeyPelicula,30);
+                        res.status(200);
+                        res.json(peliculadb);
+                     }); 
+               }
          })
-
       }
       else
       {
             PeliculaDB.find()
             .then(peliculadb => {
                client.set(KeyPelicula,JSON.stringify(peliculadb));
-              client.expire(KeyPelicula,30);
+            client.expire(KeyPelicula,30);
                res.status(200);
                res.json(peliculadb);
             }); 
       }
-})
    
 };
 
